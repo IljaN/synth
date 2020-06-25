@@ -1,7 +1,6 @@
 package generator
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/go-audio/audio"
@@ -115,7 +114,6 @@ func (o *Osc) Sample() (output float64) {
 	case WaveSaw:
 		output = amp*Sawtooth(o.CurrentPhaseAngle) + o.DcOffset
 	case WaveSqr:
-		fmt.Println(o.CurrentPhaseAngle)
 		output = amp*Square(o.CurrentPhaseAngle) + o.DcOffset
 	case WaveWhiteNoise:
 		output = amp*WhiteNoise() + o.DcOffset

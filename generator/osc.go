@@ -8,7 +8,7 @@ import (
 
 // Osc is an oscillator
 type Osc struct {
-	Shape     WaveType
+	Shape     WaveFunc
 	Amplitude float64
 	DcOffset  float64
 	Freq      float64
@@ -26,7 +26,7 @@ type Osc struct {
 
 // NewOsc returns a new oscillator, note that if you change the phase offset of the returned osc,
 // you also need to set the CurrentPhaseAngle
-func NewOsc(shape WaveType, hz float64, fs int) *Osc {
+func NewOsc(shape WaveFunc, hz float64, fs int) *Osc {
 	return &Osc{Shape: shape, Amplitude: 1, Freq: hz, Fs: fs, phaseAngleIncr: ((hz * TwoPi) / float64(fs))}
 }
 
@@ -106,19 +106,7 @@ func (o *Osc) Sample() (output float64) {
 		amp = o.Amplitude
 	}
 
-	switch o.Shape {
-	case WaveSine:
-		output = amp*Sine(o.CurrentPhaseAngle) + o.DcOffset
-	case WaveTriangle:
-		output = amp*Triangle(o.CurrentPhaseAngle) + o.DcOffset
-	case WaveSaw:
-		output = amp*Sawtooth(o.CurrentPhaseAngle) + o.DcOffset
-	case WaveSqr:
-		output = amp*Square(o.CurrentPhaseAngle) + o.DcOffset
-	case WaveWhiteNoise:
-		output = amp*WhiteNoise() + o.DcOffset
-	}
-
+	output = amp*o.Shape(o.CurrentPhaseAngle) + o.DcOffset
 	o.CurrentPhaseAngle += o.phaseAngleIncr
 	return output
 }

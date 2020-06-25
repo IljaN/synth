@@ -99,7 +99,7 @@ func (in *Instrument) Oscillators() []*gen.Osc {
 	return in.oscillators
 }
 
-func (in *Instrument) AddOscillator(shape gen.WaveType, freqHz float64) *gen.Osc {
+func (in *Instrument) AddOscillator(shape gen.WaveFunc, freqHz float64) *gen.Osc {
 	osc := gen.NewOsc(shape, freqHz, in.SamplingRate)
 	osc.Amplitude = float64(audio.IntMaxSignedValue(in.BitRate))
 	in.oscillators = append(in.oscillators, osc)

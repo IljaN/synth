@@ -2,6 +2,7 @@ package instrument
 
 import (
 	. "github.com/IljaN/synth/generator"
+	"reflect"
 	"testing"
 )
 
@@ -32,7 +33,10 @@ func TestAddRemoveOsc(t *testing.T) {
 	}
 
 	for _, o := range p.Oscillators() {
-		if o.Amplitude == 1337 || o.Shape == WaveSine {
+		sf1 := reflect.ValueOf(o.Shape)
+		sf2 := reflect.ValueOf(Sine)
+
+		if o.Amplitude == 1337 || sf1.Pointer() == sf2.Pointer() {
 			t.Errorf("Oscillator 2 was not removed")
 		}
 	}

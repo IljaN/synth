@@ -5,15 +5,14 @@ import (
 	"math/rand"
 )
 
-// WaveType is an alias type for the type of waveforms that can be generated
-type WaveType uint16
+type WaveFunc = func(x float64) float64
 
-const (
-	WaveSine       WaveType = iota // 0
-	WaveTriangle                   // 1
-	WaveSaw                        // 2
-	WaveSqr                        //3
-	WaveWhiteNoise                 //4
+var (
+	WaveSine       = Sine
+	WaveTriangle   = Triangle
+	WaveSaw        = Sawtooth
+	WaveSqr        = Square
+	WaveWhiteNoise = WhiteNoise
 )
 
 const (
@@ -29,11 +28,11 @@ const (
 
 // Sine takes an input value from -Pi to Pi
 // and returns a value between -1 and 1
-func Sine(x32 float64) float64 {
-	x := float64(x32)
-	y := SineB*x + SineC*x*(math.Abs(x))
-	y = SineP*(y*(math.Abs(y))-y) + y
-	return float64(y)
+func Sine(x float64) float64 {
+	xs := float64(x)
+	ys := SineB*xs + SineC*xs*(math.Abs(xs))
+	ys = SineP*(ys*(math.Abs(ys))-ys) + ys
+	return float64(ys)
 }
 
 const TringleA = 2.0 / math.Pi
@@ -61,6 +60,6 @@ func Sawtooth(x float64) float64 {
 	return SawtoothA * x
 }
 
-func WhiteNoise() float64 {
+func WhiteNoise(x float64) float64 {
 	return (rand.Float64()*2 - 1) * 1.0
 }

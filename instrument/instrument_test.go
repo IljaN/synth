@@ -1,7 +1,7 @@
 package instrument
 
 import (
-	. "github.com/go-audio/generator"
+	. "github.com/IljaN/synth/generator"
 	"testing"
 )
 

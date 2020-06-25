@@ -1,8 +1,8 @@
 package instrument
 
 import (
+	gen "github.com/IljaN/synth/generator"
 	"github.com/go-audio/audio"
-	gen "github.com/go-audio/generator"
 	"github.com/go-audio/wav"
 	"os"
 )

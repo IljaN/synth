@@ -2,13 +2,13 @@ package instrument
 
 import (
 	"github.com/go-audio/audio"
-	. "github.com/go-audio/generator"
+	gen "github.com/go-audio/generator"
 	"github.com/go-audio/wav"
 	"os"
 )
 
 type Instrument struct {
-	oscillators  []*Osc
+	oscillators  []*gen.Osc
 	filters      []Filter
 	out          *audio.FloatBuffer
 	SamplingRate int
@@ -22,7 +22,7 @@ type Filter interface {
 
 func New(samplingRate int, bitRate int, duration int) *Instrument {
 	p := &Instrument{
-		oscillators:  make([]*Osc, 0),
+		oscillators:  make([]*gen.Osc, 0),
 		filters:      make([]Filter, 0),
 		SamplingRate: samplingRate,
 		BitRate:      bitRate,
@@ -95,19 +95,19 @@ func (in *Instrument) emptyBuf() *audio.FloatBuffer {
 	}
 }
 
-func (in *Instrument) Oscillators() []*Osc {
+func (in *Instrument) Oscillators() []*gen.Osc {
 	return in.oscillators
 }
 
-func (in *Instrument) AddOscillator(shape WaveType, freqHz float64) *Osc {
-	osc := NewOsc(shape, freqHz, in.SamplingRate)
+func (in *Instrument) AddOscillator(shape gen.WaveType, freqHz float64) *gen.Osc {
+	osc := gen.NewOsc(shape, freqHz, in.SamplingRate)
 	osc.Amplitude = float64(audio.IntMaxSignedValue(in.BitRate))
 	in.oscillators = append(in.oscillators, osc)
 
 	return osc
 }
 
-func (in *Instrument) RemoveOscillator(osc *Osc) (ok bool) {
+func (in *Instrument) RemoveOscillator(osc *gen.Osc) (ok bool) {
 	for i := range in.oscillators {
 		if in.oscillators[i] == osc {
 			in.oscillators = append(in.oscillators[:i], in.oscillators[i+1:]...)
@@ -118,7 +118,7 @@ func (in *Instrument) RemoveOscillator(osc *Osc) (ok bool) {
 	return false
 }
 
-func (in *Instrument) SetOscillators(o ...*Osc) []*Osc {
+func (in *Instrument) SetOscillators(o ...*gen.Osc) []*gen.Osc {
 	in.oscillators = o
 	return in.oscillators
 }

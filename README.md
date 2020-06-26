@@ -22,18 +22,18 @@ if err := encoding.WriteWAV("sound.wav", out, 16); err != nil {
 ### Custom generator functions
 ```golang
 s := inst.New(48000, 16, 500000)
-	out := s.Master(
-		inst.OscOut(generator.NewOsc(func(x float64) float64 {
-			return 1.0 / math.SqrtPhi * x
-		}, 140, 16)),
-	)
+out := s.Master(
+    inst.OscOut(generator.NewOsc(func(x float64) float64 {
+        return 1.0 / math.SqrtPhi * x
+    }, 140, 16)),
+)
 
-	if err := encoding.WriteWAV("sound.wav", out, 16); err != nil {
-		log.Fatal(err)
-	}
+if err := encoding.WriteWAV("sound.wav", out, 16); err != nil {
+    log.Fatal(err)
+}
 
-    // Visualize with ffplay
-	ffplay("sound.wav", 48000)
+// Visualize with ffplay
+ffplay("sound.wav", 48000)
 ```
 
 ### Lazy higher-order transformation

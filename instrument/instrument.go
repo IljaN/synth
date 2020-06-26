@@ -14,10 +14,6 @@ type Instrument struct {
 // Out is the fundamental building block to build signal flows. It takes an audio-buffer and modifies it.
 type Out func(buf *audio.FloatBuffer)
 
-type Filter interface {
-	Filter(buf *audio.FloatBuffer)
-}
-
 func New(samplingRate int, bitRate int, duration int) *Instrument {
 	p := &Instrument{
 		SamplingRate: samplingRate,

@@ -18,8 +18,8 @@ func main() {
 	out := s.Master(
 		inst.Chain(
 			s.Mix(inst.OscOut(s.NewOsc(generator.Sine, 230)), inst.OscOut(s.NewOsc(generator.WhiteNoise, 330))),
-			filter.NewLPF(0.00110).Filter,
-			filter.NewDelayFilter(0.06, 0.03343, 0.05).Filter,
+			filter.NewLPF(&filter.LPF{Cutoff: 0.4353535}),
+			filter.NewDelayFilter(filter.DelayFilterParams(0.525, 0.2325, 0.03532)),
 		),
 	)
 

@@ -3,8 +3,6 @@ package instrument
 import (
 	"github.com/IljaN/synth/generator"
 	"github.com/go-audio/audio"
-	"github.com/go-audio/wav"
-	"os"
 )
 
 type Instrument struct {
@@ -12,6 +10,9 @@ type Instrument struct {
 	BitRate      int
 	Duration     int
 }
+
+// Out is the fundamental building block to build signal flows. It takes an audio-buffer and modifies it.
+type Out func(buf *audio.FloatBuffer)
 
 type Filter interface {
 	Filter(buf *audio.FloatBuffer)
@@ -26,12 +27,15 @@ func New(samplingRate int, bitRate int, duration int) *Instrument {
 	return p
 }
 
-func (in *Instrument) Out(o Out) *audio.FloatBuffer {
+// Master is the master output of the Instrument. Use this function to
+// get the final sound
+func (in *Instrument) Master(o Out) *audio.FloatBuffer {
 	buf := in.EmptyBuf()
 	o(buf)
 	return buf
 }
 
+// EmptyBuf generates a suitable empty sample-buffer based on instruments config
 func (in *Instrument) EmptyBuf() *audio.FloatBuffer {
 	return &audio.FloatBuffer{
 		Data:   make([]float64, in.Duration*2),
@@ -39,6 +43,7 @@ func (in *Instrument) EmptyBuf() *audio.FloatBuffer {
 	}
 }
 
+// NewOsc is a helper-function which creates an oscillator based on the instruments config
 func (in *Instrument) NewOsc(shape generator.WaveFunc, hz float64) *generator.Osc {
 	osc := generator.NewOsc(shape, hz, in.SamplingRate)
 	osc.Amplitude = float64(audio.IntMaxSignedValue(in.BitRate))
@@ -46,16 +51,17 @@ func (in *Instrument) NewOsc(shape generator.WaveFunc, hz float64) *generator.Os
 	return osc
 }
 
-type Out func(buf *audio.FloatBuffer)
-
-func OscOutput(osc *generator.Osc) func(buf *audio.FloatBuffer) {
+// OscOut returns a function which fills the audio-buffer with an oscillator/generator signal
+func OscOut(osc *generator.Osc) func(buf *audio.FloatBuffer) {
 	o := osc
 	return func(buf *audio.FloatBuffer) {
 		o.Fill(buf)
 	}
 }
 
-func Channel(stages ...Out) Out {
+// Chain creates a function which passes the audio-buffer trough multiple stages
+// for transformation.
+func Chain(stages ...Out) Out {
 	return func(buf *audio.FloatBuffer) {
 		for i := range stages {
 			stages[i](buf)
@@ -63,16 +69,7 @@ func Channel(stages ...Out) Out {
 	}
 }
 
-func Div(val float64) Out {
-	return func(buf *audio.FloatBuffer) {
-		for i := range buf.Data {
-			if buf.Data[i] != 0.0 {
-				buf.Data[i] /= val
-			}
-		}
-	}
-}
-
+// Mix symmetrically mixes multiple inputs
 func (in *Instrument) Mix(inputs ...Out) Out {
 	oscCount := float64(len(inputs))
 	oscOuts := make([]*audio.FloatBuffer, 0, int(oscCount))
@@ -93,19 +90,13 @@ func (in *Instrument) Mix(inputs ...Out) Out {
 	}
 }
 
-func (in *Instrument) WriteWAV(fileName string, out *audio.FloatBuffer) error {
-	wavFile, err := os.Create(fileName)
-	if err != nil {
-		return err
+// Div returns a function which divides every sample of a given buffer by a static value
+func Div(val float64) Out {
+	return func(buf *audio.FloatBuffer) {
+		for i := range buf.Data {
+			if buf.Data[i] != 0.0 {
+				buf.Data[i] /= val
+			}
+		}
 	}
-
-	defer wavFile.Close()
-
-	enc := wav.NewEncoder(wavFile, out.PCMFormat().SampleRate, in.BitRate, out.PCMFormat().NumChannels, 1)
-	if err := enc.Write(out.AsIntBuffer()); err != nil {
-		return err
-	}
-
-	defer enc.Close()
-	return nil
 }

@@ -12,8 +12,8 @@ func main() {
 	_ = os.Remove("bd.wav")
 	s := inst.New(48000, 16, 500000)
 	s.WriteWAV("bd.wav", s.Out(inst.Channel(s.Mix(
-		inst.OscOutput(s.NewOsc(generator.Sine, 230, 48000)),
-		inst.OscOutput(s.NewOsc(generator.WhiteNoise, 330, 48000)),
+		inst.OscOutput(s.NewOsc(generator.Sine, 230)),
+		inst.OscOutput(s.NewOsc(generator.WhiteNoise, 330)),
 	),
 		filter.NewDelayFilter(0.6, 0.3, 0.5).Filter,
 		filter.NewLPF(0.00110).Filter,

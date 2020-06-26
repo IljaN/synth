@@ -39,8 +39,8 @@ func (in *Instrument) EmptyBuf() *audio.FloatBuffer {
 	}
 }
 
-func (in *Instrument) NewOsc(shape generator.WaveFunc, hz float64, fs int) *generator.Osc {
-	osc := generator.NewOsc(shape, hz, fs)
+func (in *Instrument) NewOsc(shape generator.WaveFunc, hz float64) *generator.Osc {
+	osc := generator.NewOsc(shape, hz, in.SamplingRate)
 	osc.Amplitude = float64(audio.IntMaxSignedValue(in.BitRate))
 
 	return osc

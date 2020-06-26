@@ -5,16 +5,6 @@ import (
 	"math/rand"
 )
 
-type WaveFunc = func(x float64) float64
-
-var (
-	WaveSine       = Sine
-	WaveTriangle   = Triangle
-	WaveSaw        = Sawtooth
-	WaveSqr        = Square
-	WaveWhiteNoise = WhiteNoise
-)
-
 const (
 	TwoPi = float64(2 * math.Pi)
 )
@@ -25,6 +15,8 @@ const (
 	Q     = 0.775
 	SineP = 0.225
 )
+
+type WaveFunc = func(x float64) float64
 
 // Sine takes an input value from -Pi to Pi
 // and returns a value between -1 and 1

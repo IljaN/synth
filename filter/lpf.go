@@ -19,7 +19,7 @@ func NewLPF(cutoff float64) *LPF {
 	}
 }
 
-func (f *LPF) Filter(buf *audio.FloatBuffer) error {
+func (f *LPF) Filter(buf *audio.FloatBuffer) {
 	n := len(buf.Data)
 	isStereo := buf.Format.NumChannels == 2
 	if isStereo {
@@ -40,5 +40,4 @@ func (f *LPF) Filter(buf *audio.FloatBuffer) error {
 		}
 	}
 
-	return nil
 }

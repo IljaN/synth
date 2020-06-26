@@ -29,7 +29,7 @@ func NewDelayFilter(time, factor, feedback float64) *DelayFilter {
 	}
 }
 
-func (f *DelayFilter) Filter(buf *audio.FloatBuffer) error {
+func (f *DelayFilter) Filter(buf *audio.FloatBuffer) {
 	isStereo := buf.Format.NumChannels == 2
 	sampleRate := buf.Format.SampleRate
 
@@ -65,7 +65,6 @@ func (f *DelayFilter) Filter(buf *audio.FloatBuffer) error {
 			buf.Data[ix+1] = s
 		}
 	}
-	return nil
 }
 
 func Delay(s, factor, feedback float64, ring *ring.Ring) float64 {

@@ -25,7 +25,7 @@ func NewFlangerFilter(time, factor, rate float64) *FlangerFilter {
 	}
 }
 
-func (f *FlangerFilter) Filter(buf *audio.FloatBuffer) error {
+func (f *FlangerFilter) Filter(buf *audio.FloatBuffer) {
 	sampleRate := buf.Format.SampleRate
 	isStereo := buf.Format.NumChannels == 2
 	time := int(float64(sampleRate) * f.Time)
@@ -67,6 +67,4 @@ func (f *FlangerFilter) Filter(buf *audio.FloatBuffer) error {
 			f.Phase = 0
 		}
 	}
-
-	return nil
 }

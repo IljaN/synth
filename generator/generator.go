@@ -61,5 +61,5 @@ func Sawtooth(x float64) float64 {
 }
 
 func WhiteNoise(x float64) float64 {
-	return (rand.Float64()*2 - 1) * 1.0
+	return (rand.Float64()*2 - 1)
 }
